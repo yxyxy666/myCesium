@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import cesiumMap from '../views/cesiumMap.vue'
+import myApp from '../views/myApp.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'cesiumMap',
-      component: cesiumMap
+      name: 'myApp',
+      component: myApp
     },
     // {
     //   path: '/about',

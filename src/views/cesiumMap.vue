@@ -1,17 +1,5 @@
 <script setup>
 import * as Cesium from 'cesium';
-import { onMounted } from 'vue';
-async function createTileset(viewer){
-    let tileset
-    try {
-        tileset = await Cesium.Cesium3DTileset.fromIonAssetId(40866, {
-            enableCollision: true,
-        });
-        viewer.scene.primitives.add(tileset);
-    } catch (error) {
-        console.log(`Error loading tileset: ${error}`); 
-    }
-}
 onMounted(async ()=>{
     Cesium.Ion.defaultAccessToken='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5YWY4NmMwZi04MTE4LTRhZDQtODEyNy1iNjEzZTVhZDlhZDIiLCJpZCI6MTk4OTU4LCJpYXQiOjE3MDkyNjQ2MDZ9.nmLa6cjbGxnQ6i6RAZtlYi31plf-VHzc5xC-Gdu9lrM'
     let terrain = await Cesium.CesiumTerrainProvider.fromUrl('http://localhost:9003/terrain/F7jW8PpA', {
