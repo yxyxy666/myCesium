@@ -1,3 +1,4 @@
+
 const MENULIST = [
     {
         id:'sjjz',
@@ -11,5 +12,40 @@ const MENULIST = [
                 name:'3dtiles'
             }
         ]
+    },
+    {
+        id:'analyze',
+        title:'分析',
+        children:[
+            {
+                id:'sunAnalyze',
+                name:'日照分析'
+            },{
+                id:'viewAnalyze',
+                name:'可视域分析'
+            }
+        ]
+    },
+    {
+        id:'measure',
+        title:'测量',
+        children:[
+            {
+                id:'distanceMeasure',
+                name:'距离测量'
+            },
+            {
+                id:'areaMeasure',
+                name:'面积测量'
+            },
+            {
+                id:'slopeMeasure',
+                name:'坡度测量'
+            },
+        ]
     }
 ]
+const CESIUMMAP = {
+    terrainUrl:"http://localhost:9003/terrain/F7jW8PpA",
+    sanDtilesUrl:"http://localhost:9003/model/tUr0pMunM/tileset.json",
+}

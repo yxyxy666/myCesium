@@ -1,16 +1,111 @@
 <script setup>
+import * as Cesium from 'cesium';
+import { useCounterStore } from '../stores/counter'
+// 注入
+let viewer = inject('cesiumViewer')
+let addTerrain = inject('addTerrain')
+let clearTerrain = inject('clearTerrain')
+let add3DTiles = inject('add3DTiles')
+let clear3DTiles = inject('clear3DTiles')
+let addDistanceMeasure = inject('addDistanceMeasure')
+let clearDistanceMeasure = inject('clearDistanceMeasure')
+let addAreaMeasure = inject('addAreaMeasure')
+let clearAreaMeasure = inject('clearAreaMeasure')
+let addSlopeMeasure = inject('addSlopeMeasure')
+let clearSlopeMeasure = inject('clearSlopeMeasure')
+// 变量
 let menuList = ref(MENULIST)
-const isCollapse = ref(true);
-const currentMenu = ref(0);
+let isCollapse = ref(true);
+let currentMenu = ref(0);
+
+// pinia
+const counterStore = useCounterStore()
+
+// 计算属性
+// const currentFuncId = computed(()=>{
+//   return counterStore.currentFuncId
+// } )
+
+// 监听
+watch(
+  ()=>counterStore.currentFuncId,
+  (newVal,oldVal)=>{
+    if(oldVal){
+      closeFun(oldVal)
+    }
+  },
+  { deep: true }
+)
+
+// 方法
+// 功能菜单展开
 const handleOpen = (key, keyPath) => {
-  console.log(key, keyPath);
+    // console.log(key, keyPath);
 };
+// 功能菜单关闭
 const handleClose = (key, keyPath) => {
-  console.log(key, keyPath);
+  // console.log(key, keyPath);
 };
+// 选中某功能
 const startFun = (item,ele) => {
-  console.log(item,ele);
+  counterStore.changeFuncId(ele.id)
+  switch(ele.id){
+    // 数据
+    case 'terrain':
+      addTerrain()
+      break;
+    case '3dtiles':
+      add3DTiles()
+      break;
+    // 分析
+    case 'sunAnalyze':
+      
+      break;
+    case 'viewAnalyze':
+      
+      break;
+    // 测量
+    case 'distanceMeasure':
+      addDistanceMeasure()
+      break;
+    case 'areaMeasure':
+      addAreaMeasure()
+      break;
+    case 'slopeMeasure':
+      addSlopeMeasure()
+      break;
+  }
+  
 };
+// 关闭上次功能
+const closeFun = (oldId) => {
+  switch(oldId){
+    // 数据
+    case 'terrain':
+      clearTerrain()
+      break;
+    case '3dtiles':
+      clear3DTiles()
+      break;
+    // 分析
+    case 'sunAnalyze':
+      
+      break;
+    case 'viewAnalyze':
+      
+      break;
+    // 测量
+    case 'distanceMeasure':
+      clearDistanceMeasure()
+      break;
+    case 'areaMeasure':
+      clearAreaMeasure()
+      break;
+    case 'slopeMeasure':
+      clearSlopeMeasure()
+      break;
+  }
+}
 </script>
 <template>
   <el-menu

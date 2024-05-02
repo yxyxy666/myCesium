@@ -14,7 +14,7 @@ export default defineConfig({
     VueDevTools(),
     cesium(),
     AutoImport({
-      imports: ['vue'],
+      imports: ['vue','pinia'],
       dts: true,
       resolvers: [ElementPlusResolver()],
     }),
