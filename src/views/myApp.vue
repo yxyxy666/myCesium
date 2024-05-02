@@ -24,19 +24,27 @@ provide('clear3DTiles',()=>{
 })
 // 添加距离测量
 provide('addDistanceMeasure',async()=>{
-    handler.value = cesiumFun.addDistanceMeasure(viewer.value)
+    if(handler.value?.isDestroyed()||!handler.value){
+        handler.value = new Cesium.ScreenSpaceEventHandler(viewer.value.canvas);
+    }
+    cesiumFun.addDistanceMeasure(viewer.value,handler.value)
 })
 // 清除距离测量
 provide('clearDistanceMeasure',()=>{
     cesiumFun.clearDistanceMeasure(viewer.value,handler.value)
+    handler.value.destroy()
 })
 // 添加面积测量
 provide('addAreaMeasure',async()=>{
-    sanDTiles.value = await cesiumFun.addAreaMeasure(viewer.value)
+    if(handler.value?.isDestroyed()||!handler.value){
+        handler.value = new Cesium.ScreenSpaceEventHandler(viewer.value.canvas);
+    }
+    cesiumFun.addAreaMeasure(viewer.value,handler.value)
 })
 // 清除面积测量
 provide('clearAreaMeasure',()=>{
-    cesiumFun.clearAreaMeasure(viewer.value,sanDTiles.value)
+    cesiumFun.clearAreaMeasure(viewer.value)
+    handler.value.destroy()
 })
 // 添加坡度测量
 provide('addSlopeMeasure',async()=>{

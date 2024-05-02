@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@turf/turf": "^6.5.0",
     "element-plus": "^2.7.2",
     "less": "^4.2.0",
     "pinia": "^2.1.7",
+    "turf": "^3.0.14",
     "vite-plugin-cesium": "^1.2.22",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"

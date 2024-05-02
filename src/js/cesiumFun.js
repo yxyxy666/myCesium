@@ -1,4 +1,5 @@
 import * as Cesium from 'cesium'
+import * as turf from '@turf/turf'
 let cesiumFun = {
     // 重写鼠标事件（左右键滚轮控制平移旋转等）
     overrideMouse(viewer){
@@ -40,13 +41,13 @@ let cesiumFun = {
         viewer.scene.primitives.remove(sanDTiles)
     },
     // 添加距离测量工具
-    addDistanceMeasure(viewer){
+    addDistanceMeasure(viewer,handler){
         this.addTerrain(viewer)
         // 确保地形数据显示
         viewer.scene.globe.enableTerrain = true
         // 用于存储测量点的数组
         let positions = []
-        const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+        let polylineEntity 
         function addPoint(position) {
             positions.push(position.clone());
             // 创建并添加点实体
@@ -109,6 +110,8 @@ let cesiumFun = {
             // var latitude = Cesium.Math.toDegrees(cartographic.latitude);    // 纬度
             // console.log(longitude,latitude)
             // console.log(cartesian)
+            
+
             if (viewer.scene.pickPosition(click.position)) {
                 // 获取点击位置
                 var worldPosition = viewer.scene.pickPosition(click.position);
@@ -160,24 +163,80 @@ let cesiumFun = {
                 }
             }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-        return handler
     },
     // 移除距离测量工具
     clearDistanceMeasure(viewer,handler){
         this.clearTerrain(viewer)
         viewer.entities.removeAll();
-        // 获取Viewer的屏幕空间事件处理器
-        // 移除左键点击事件
-        handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-        handler = null
+        
     },
     // 添加面积测量工具
-    addAreaMeasure(viewer){
+    addAreaMeasure(viewer,handler){
         this.addTerrain(viewer)
+        let positions = []
+        let codeInfo = []
+        let polygon = new Cesium.PolygonHierarchy()
+        let obj = viewer.entities.add({
+            polyline: {
+                positions: new Cesium.CallbackProperty(function () {
+                    return positions;
+                }, false),
+                width: 5,
+                material: Cesium.Color.YELLOW,
+                clampToGround: true,
+            },
+            polygon: {
+                hierarchy: new Cesium.CallbackProperty(function () {
+                    return polygon;
+                }, false),
+                material: Cesium.Color.RED.withAlpha(0.4),
+                clampToGround: true,
+            },
+        });
+        handler.setInputAction((movement) => {
+            let cartesian = viewer.scene.pickPosition(movement.endPosition);
+            let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+            let lng = Cesium.Math.toDegrees(cartographic.longitude);
+            let lat = Cesium.Math.toDegrees(cartographic.latitude);
+            let hei = Cesium.Math.toDegrees(cartographic.height);
+        
+            if (positions.length >= 0) {
+                if (cartesian && cartesian.x) {
+                    positions.pop();
+                    positions.push(cartesian);
+                    polygon.positions.pop();
+                    polygon.positions.push(cartesian);
+                    codeInfo.pop();
+                    codeInfo.push([lng, lat, hei]);
+                }
+            }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        handler.setInputAction((movement) => {
+            let cartesian = viewer.scene.pickPosition(movement.position);
+            let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+            let lng = Cesium.Math.toDegrees(cartographic.longitude);
+            let lat = Cesium.Math.toDegrees(cartographic.latitude);
+            let hei = Cesium.Math.toDegrees(cartographic.height);
+            if (cartesian && cartesian.x) {
+                if (positions.length == 0) {
+                    positions.push(cartesian.clone());
+                }
+                codeInfo.push([lng, lat, hei]);
+                positions.push(cartesian.clone());
+                polygon.positions.push(cartesian.clone());
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        handler.setInputAction(() => {
+            positions.push(positions[0]);
+            obj.polyline.positions = positions
+            obj.polygon.hierarchy = polygon
+            console.log(getArea(positions))
+        }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     },
     // 移除面积测量工具
     clearAreaMeasure(viewer){
         this.clearTerrain(viewer)
+        viewer.entities.removeAll();
     },
     // 添加坡度测量工具
     addSlopeMeasure(viewer){

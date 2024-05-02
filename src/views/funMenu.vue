@@ -27,15 +27,15 @@ const counterStore = useCounterStore()
 // } )
 
 // 监听
-watch(
-  ()=>counterStore.currentFuncId,
-  (newVal,oldVal)=>{
-    if(oldVal){
-      closeFun(oldVal)
-    }
-  },
-  { deep: true }
-)
+// watch(
+//   ()=>counterStore.currentFuncId,
+//   (newVal,oldVal)=>{
+//     if(oldVal){
+//       closeFun(oldVal)
+//     }
+//   },
+//   { deep: true }
+// )
 
 // 方法
 // 功能菜单展开
@@ -48,6 +48,7 @@ const handleClose = (key, keyPath) => {
 };
 // 选中某功能
 const startFun = (item,ele) => {
+  closeFun(counterStore.currentFuncId)
   counterStore.changeFuncId(ele.id)
   switch(ele.id){
     // 数据
@@ -75,7 +76,6 @@ const startFun = (item,ele) => {
       addSlopeMeasure()
       break;
   }
-  
 };
 // 关闭上次功能
 const closeFun = (oldId) => {
