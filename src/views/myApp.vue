@@ -46,14 +46,14 @@ provide('clearAreaMeasure',()=>{
     cesiumFun.clearAreaMeasure(viewer.value)
     handler.value.destroy()
 })
-// 添加坡度测量
-provide('addSlopeMeasure',async()=>{
-    sanDTiles.value = await cesiumFun.addSlopeMeasure(viewer.value)
-})
-// 清除坡度测量
-provide('clearSlopeMeasure',()=>{
-    cesiumFun.clearSlopeMeasure(viewer.value,sanDTiles.value)
-})
+// // 添加坡度测量
+// provide('addSlopeMeasure',async()=>{
+//     sanDTiles.value = await cesiumFun.addSlopeMeasure(viewer.value)
+// })
+// // 清除坡度测量
+// provide('clearSlopeMeasure',()=>{
+//     cesiumFun.clearSlopeMeasure(viewer.value,sanDTiles.value)
+// })
 onMounted(async()=>{
     Cesium.Ion.defaultAccessToken='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5YWY4NmMwZi04MTE4LTRhZDQtODEyNy1iNjEzZTVhZDlhZDIiLCJpZCI6MTk4OTU4LCJpYXQiOjE3MDkyNjQ2MDZ9.nmLa6cjbGxnQ6i6RAZtlYi31plf-VHzc5xC-Gdu9lrM'
     viewer.value = new Cesium.Viewer('cesiumContainer',{

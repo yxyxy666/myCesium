@@ -136,14 +136,6 @@ let cesiumFun = {
                                 });
                                 viewer.entities.add({
                                     position: midpoint,
-                                    point: {
-                                        show:false,
-                                        pixelSize: 10,
-                                        color: Cesium.Color.RED,
-                                        outlineColor: Cesium.Color.WHITE,
-                                        outlineWidth: 2,
-                                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND//贴地
-                                    },
                                     label: {
                                         text: distance + "米",
                                         font: '14px sans-serif',
@@ -153,7 +145,7 @@ let cesiumFun = {
                                         backgroundColor: new Cesium.Color(0, 0, 0, 0.5),
                                         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
                                         verticalOrigin: Cesium.VerticalOrigin.TOP,
-                                        disableDepthTestDistance: Number.POSITIVE_INFINITY
+                                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND//贴地
                                     },
                                 });
                                 console.log(polylineEntity)
@@ -199,7 +191,6 @@ let cesiumFun = {
             let lng = Cesium.Math.toDegrees(cartographic.longitude);
             let lat = Cesium.Math.toDegrees(cartographic.latitude);
             let hei = Cesium.Math.toDegrees(cartographic.height);
-        
             if (positions.length >= 0) {
                 if (cartesian && cartesian.x) {
                     positions.pop();
@@ -230,8 +221,33 @@ let cesiumFun = {
             positions.push(positions[0]);
             obj.polyline.positions = positions
             obj.polygon.hierarchy = polygon
-            console.log(getArea(positions))
+            getArea(positions)
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+        function getArea(positions) {
+            let poi = positions.map(item=>{
+                let cartographic = Cesium.Cartographic.fromCartesian(item)
+                return [Cesium.Math.toDegrees(cartographic.longitude),Cesium.Math.toDegrees(cartographic.latitude),cartographic.height]
+            })
+            let poiArr = poi.map(item=>{
+                return turf.point(item)
+            })
+            let center = turf.center(turf.featureCollection(poiArr));
+            let area = turf.area(turf.polygon([poi]));
+            console.log((area/1000).toFixed(2)+"平方公里")
+            console.log(center)
+            obj.position = Cesium.Cartesian3.fromDegrees(center.geometry.coordinates[0],center.geometry.coordinates[1])
+            obj.label={
+                text: (area/1000).toFixed(2) + "平方公里",
+                font: '14px sans-serif',
+                fillColor: Cesium.Color.WHITE,
+                show:true,
+                showBackground: true,
+                backgroundColor: new Cesium.Color(0, 0, 0, 0.5),
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                verticalOrigin: Cesium.VerticalOrigin.TOP,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND//贴地
+            }
+        }
     },
     // 移除面积测量工具
     clearAreaMeasure(viewer){

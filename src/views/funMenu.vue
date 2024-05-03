@@ -11,8 +11,8 @@ let addDistanceMeasure = inject('addDistanceMeasure')
 let clearDistanceMeasure = inject('clearDistanceMeasure')
 let addAreaMeasure = inject('addAreaMeasure')
 let clearAreaMeasure = inject('clearAreaMeasure')
-let addSlopeMeasure = inject('addSlopeMeasure')
-let clearSlopeMeasure = inject('clearSlopeMeasure')
+// let addSlopeMeasure = inject('addSlopeMeasure')
+// let clearSlopeMeasure = inject('clearSlopeMeasure')
 // 变量
 let menuList = ref(MENULIST)
 let isCollapse = ref(true);
@@ -72,9 +72,6 @@ const startFun = (item,ele) => {
     case 'areaMeasure':
       addAreaMeasure()
       break;
-    case 'slopeMeasure':
-      addSlopeMeasure()
-      break;
   }
 };
 // 关闭上次功能
@@ -100,9 +97,6 @@ const closeFun = (oldId) => {
       break;
     case 'areaMeasure':
       clearAreaMeasure()
-      break;
-    case 'slopeMeasure':
-      clearSlopeMeasure()
       break;
   }
 }

@@ -18,6 +18,9 @@ const MENULIST = [
         title:'分析',
         children:[
             {
+                id:'floodAnalyze',
+                name:'淹没'
+            },{
                 id:'sunAnalyze',
                 name:'日照分析'
             },{
@@ -38,10 +41,10 @@ const MENULIST = [
                 id:'areaMeasure',
                 name:'面积测量'
             },
-            {
-                id:'slopeMeasure',
-                name:'坡度测量'
-            },
+            // {
+            //     id:'slopeMeasure',
+            //     name:'坡度测量'
+            // },
         ]
     }
 ]
