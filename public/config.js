@@ -19,7 +19,7 @@ const MENULIST = [
         children:[
             {
                 id:'floodAnalyze',
-                name:'淹没'
+                name:'淹没分析'
             },{
                 id:'sunAnalyze',
                 name:'日照分析'

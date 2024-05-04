@@ -22,6 +22,14 @@ provide('add3DTiles',async()=>{
 provide('clear3DTiles',()=>{
     cesiumFun.clear3DTiles(viewer.value,sanDTiles.value)
 })
+// 添加3dtiles
+provide('addFloodAnalyze',()=>{
+    sanDTiles.value = cesiumFun.addFloodAnalyze(viewer.value)
+})
+// 清除3dtiles
+provide('clearFloodAnalyze',()=>{
+    cesiumFun.clearFloodAnalyze(viewer.value,sanDTiles.value)
+})
 // 添加距离测量
 provide('addDistanceMeasure',async()=>{
     if(handler.value?.isDestroyed()||!handler.value){

@@ -7,6 +7,8 @@ let addTerrain = inject('addTerrain')
 let clearTerrain = inject('clearTerrain')
 let add3DTiles = inject('add3DTiles')
 let clear3DTiles = inject('clear3DTiles')
+let addFloodAnalyze = inject('addFloodAnalyze')
+let clearFloodAnalyze = inject('clearFloodAnalyze')
 let addDistanceMeasure = inject('addDistanceMeasure')
 let clearDistanceMeasure = inject('clearDistanceMeasure')
 let addAreaMeasure = inject('addAreaMeasure')
@@ -59,6 +61,9 @@ const startFun = (item,ele) => {
       add3DTiles()
       break;
     // 分析
+    case 'floodAnalyze':
+      addFloodAnalyze()
+      break;
     case 'sunAnalyze':
       
       break;
@@ -85,6 +90,9 @@ const closeFun = (oldId) => {
       clear3DTiles()
       break;
     // 分析
+    case 'floodAnalyze':
+      clearFloodAnalyze()
+      break;
     case 'sunAnalyze':
       
       break;

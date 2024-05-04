@@ -40,6 +40,45 @@ let cesiumFun = {
     clear3DTiles(viewer,sanDTiles){
         viewer.scene.primitives.remove(sanDTiles)
     },
+    // 添加淹没分析
+    addFloodAnalyze(viewer){
+        this.addTerrain(viewer)
+        let height = 0
+        // [114.9188621784644, 30.245237624889878, 0]
+        // [114.88940203951506, 30.21176476628671, 0]
+        // [114.84150151462956, 30.24179852054982, 0]
+        // [114.87263417948456, 30.277783001036237, 0]
+        // [114.9188621784644, 30.245237624889878, 0]
+        let polygon = viewer.entities.add({
+            polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArray([
+                    114.9188621784644, 30.245237624889878,
+                    114.88940203951506, 30.21176476628671,
+                    114.84150151462956, 30.24179852054982,
+                    114.87263417948456, 30.277783001036237,]),
+                material: new Cesium.Color.fromBytes(64, 157, 253, 150),
+                perPositionHeight: true,//是否利用每个点位自身高程
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,//贴地
+                extrudedHeight: new Cesium.CallbackProperty(()=>{
+                    console.log(height)
+                    if(height < 300){
+                        height += 1/6
+                    }
+                    return height
+                },false),
+            }
+        });
+        viewer.zoomTo(polygon)
+        // setTimeout(()=>{
+        //     polygon.polygon.extrudedHeight.setValue()
+        // },2000)
+        
+    },
+    // 移除淹没分析
+    clearFloodAnalyze(viewer){
+        this.clearTerrain(viewer)
+        viewer.entities.removeAll();
+    },
     // 添加距离测量工具
     addDistanceMeasure(viewer,handler){
         this.addTerrain(viewer)
@@ -158,8 +197,7 @@ let cesiumFun = {
     },
     // 移除距离测量工具
     clearDistanceMeasure(viewer,handler){
-        this.clearTerrain(viewer)
-        viewer.entities.removeAll();
+        
         
     },
     // 添加面积测量工具
@@ -231,6 +269,8 @@ let cesiumFun = {
             let poiArr = poi.map(item=>{
                 return turf.point(item)
             })
+            console.log(poiArr)
+            
             let center = turf.center(turf.featureCollection(poiArr));
             let area = turf.area(turf.polygon([poi]));
             console.log((area/1000).toFixed(2)+"平方公里")
