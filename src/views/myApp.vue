@@ -22,13 +22,21 @@ provide('add3DTiles',async()=>{
 provide('clear3DTiles',()=>{
     cesiumFun.clear3DTiles(viewer.value,sanDTiles.value)
 })
-// 添加3dtiles
+// 添加淹没分析
 provide('addFloodAnalyze',()=>{
-    sanDTiles.value = cesiumFun.addFloodAnalyze(viewer.value)
+    cesiumFun.addFloodAnalyze(viewer.value)
 })
-// 清除3dtiles
+// 清除淹没分析
 provide('clearFloodAnalyze',()=>{
     cesiumFun.clearFloodAnalyze(viewer.value,sanDTiles.value)
+})
+// 添加日照分析
+provide('addSunAnalyze',()=>{
+    cesiumFun.addSunAnalyze(viewer.value)
+})
+// 清除日照分析
+provide('clearSunAnalyze',()=>{
+    cesiumFun.clearSunAnalyze(viewer.value)
 })
 // 添加距离测量
 provide('addDistanceMeasure',async()=>{
@@ -63,9 +71,11 @@ provide('clearAreaMeasure',()=>{
 //     cesiumFun.clearSlopeMeasure(viewer.value,sanDTiles.value)
 // })
 onMounted(async()=>{
-    Cesium.Ion.defaultAccessToken='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5YWY4NmMwZi04MTE4LTRhZDQtODEyNy1iNjEzZTVhZDlhZDIiLCJpZCI6MTk4OTU4LCJpYXQiOjE3MDkyNjQ2MDZ9.nmLa6cjbGxnQ6i6RAZtlYi31plf-VHzc5xC-Gdu9lrM'
+    console.log(Cesium.Ion.defaultAccessToken)
+    // Cesium.Ion.defaultAccessToken='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5YWY4NmMwZi04MTE4LTRhZDQtODEyNy1iNjEzZTVhZDlhZDIiLCJpZCI6MTk4OTU4LCJpYXQiOjE3MDkyNjQ2MDZ9.nmLa6cjbGxnQ6i6RAZtlYi31plf-VHzc5xC-Gdu9lrM'
     viewer.value = new Cesium.Viewer('cesiumContainer',{
         // terrainProvider:  terrain,
+        terrain:Cesium.Terrain.fromWorldTerrain(),
         shadows: true,
         animation:false,
         homeButton:false,
@@ -74,8 +84,9 @@ onMounted(async()=>{
         sceneModePicker:false,
         baseLayerPicker:false,
         geocoder:false,
-        infoBox:false
+        infoBox:false,
     })
+    viewer.value.scene.debugShowFramesPerSecond = true;
     cesiumFun.overrideMouse(viewer.value)
 })
 

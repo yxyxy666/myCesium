@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@turf/turf": "^6.5.0",
+    "@types/node": "^20.12.11",
     "element-plus": "^2.7.2",
     "less": "^4.2.0",
     "pinia": "^2.1.7",

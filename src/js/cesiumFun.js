@@ -1,5 +1,6 @@
 import * as Cesium from 'cesium'
 import * as turf from '@turf/turf'
+
 let cesiumFun = {
     // 重写鼠标事件（左右键滚轮控制平移旋转等）
     overrideMouse(viewer){
@@ -14,16 +15,30 @@ let cesiumFun = {
     }, 
     // 添加地形数据
     async addTerrain(viewer){
-        let terrain = await Cesium.CesiumTerrainProvider.fromUrl(CESIUMMAP.terrainUrl, {
-            requestWaterMask: true,//标志指示客户端是否应该从服务器请求每个图块的水面罩（如果可用）。
-            requestVertexNormals: true//该标志指示客户端是否应以每个顶点法线的形式从服务器请求额外的照明信息（如果可用）。
-        });
-        console.log(terrain)
-        viewer.terrainProvider = terrain;
+        // cesiumLab自定义的地形数据加载
+        // let terrain = await Cesium.CesiumTerrainProvider.fromUrl(CESIUMMAP.terrainUrl, {
+        //     requestWaterMask: true,//标志指示客户端是否应该从服务器请求每个图块的水面罩（如果可用）。
+        //     requestVertexNormals: true//该标志指示客户端是否应以每个顶点法线的形式从服务器请求额外的照明信息（如果可用）。
+        // });
+        // console.log(terrain)
+        // viewer.terrainProvider = terrain;
         viewer.scene.globe.depthTestAgainstTerrain = true;
         viewer.scene.camera.setView({
             destination: new Cesium.Cartesian3.fromDegrees(114.8816542100676, 30.245409980000385,8000),
         });
+        // let entity = viewer.entities.add({
+        //     id:'Cesium_Air',
+        //     position:new Cesium.Cartesian3.fromDegrees(114.8816542100676, 30.245409980000385,4000),
+        //     model:{
+        //         uri:'../../public/models/Cesium_Air.glb',
+        //         show:true,
+        //         minimumPixelSize: 500,
+        //         maximumScale: 10000
+        //     }
+        // })
+        // viewer.trackedEntity = viewer.entities.getById('Cesium_Air');
+        // viewer.trackedEntity = entity 
+
     },
     // 清除地形数据
     clearTerrain(viewer){
@@ -31,9 +46,40 @@ let cesiumFun = {
     },
     // 加载3dTiles数据
     async add3DTiles(viewer){
-        let sanDTiles = viewer.scene.primitives.add(await Cesium.Cesium3DTileset.fromUrl(CESIUMMAP.sanDtilesUrl))
-        viewer.zoomTo(sanDTiles)
-        console.log(sanDTiles)
+        // 加载自定义3DTiles
+        // let sanDTiles = viewer.scene.primitives.add(await Cesium.Cesium3DTileset.fromUrl(CESIUMMAP.sanDtilesUrl))
+        // viewer.zoomTo(sanDTiles)
+
+        let sanDTiles = await Cesium.Cesium3DTileset.fromIonAssetId(40866, {
+            enableCollision: true,
+        });
+        viewer.scene.primitives.add(sanDTiles);
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromRadians(
+              -1.3193669086512454,
+              0.698810888305128,
+              220
+            ),
+            orientation: {
+              heading: -1.3,
+              pitch: -0.6,
+              roll: 0,
+            },
+            endTransform: Cesium.Matrix4.IDENTITY,
+        });
+debugger
+        let dataSource = await Cesium.CzmlDataSource.load('../../public/models/CesiumMilkTruck/ClampToGround.czml')
+        let entity = dataSource.entities.getById("CesiumMilkTruck")
+        // dataSource.entities.values[0].model.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND
+        entity.model.uri = "../../public/models/CesiumMilkTruck/CesiumMilkTruck.glb";
+        entity.model.scale = 2.5;
+        entity.model.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
+        entity.orientation = new Cesium.VelocityOrientationProperty(
+            entity.position
+        );
+        viewer.dataSources.add(dataSource)
+        viewer.clock.shouldAnimate = true
+        // console.log(sanDTiles)
         return sanDTiles
     },
     // 移除3dTiles数据
@@ -76,6 +122,15 @@ let cesiumFun = {
     },
     // 移除淹没分析
     clearFloodAnalyze(viewer){
+        this.clearTerrain(viewer)
+        viewer.entities.removeAll();
+    },
+    // 添加日照分析
+    addSunAnalyze(viewer){
+        this.addTerrain(viewer)
+    },
+    // 移除日照分析
+    clearSunAnalyze(viewer){
         this.clearTerrain(viewer)
         viewer.entities.removeAll();
     },
@@ -197,8 +252,8 @@ let cesiumFun = {
     },
     // 移除距离测量工具
     clearDistanceMeasure(viewer,handler){
-        
-        
+        this.clearTerrain(viewer)
+        viewer.entities.removeAll();
     },
     // 添加面积测量工具
     addAreaMeasure(viewer,handler){
